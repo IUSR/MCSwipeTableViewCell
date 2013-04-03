@@ -172,17 +172,37 @@ secondStateIconName:(NSString *)secondIconName
     }
 }
 
+- (BOOL)shouldPanLeftToRight {
+    return self.firstIconName != nil || self.firstColor != nil ||
+           self.secondIconName != nil || self.secondColor != nil;
+}
+
+- (BOOL)shouldPanRightToLeft {
+    return self.thirdIconName != nil || self.thirdColor != nil ||
+           self.fourthIconName != nil || self.fourthColor != nil;
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if (gestureRecognizer == _panGestureRecognizer) {
-        UIScrollView *superview = (UIScrollView *) self.superview;
-        CGPoint translation = [(UIPanGestureRecognizer *) gestureRecognizer translationInView:superview];
-
-        // Make sure it is scrolling horizontally
-        return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO && (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
+    if (gestureRecognizer != _panGestureRecognizer) {
+        return NO;
     }
-    return NO;
+    UIScrollView *superview = (UIScrollView *) self.superview;
+    CGPoint translation = [(UIPanGestureRecognizer *) gestureRecognizer translationInView:superview];
+
+    BOOL pansHorizontally = fabs(translation.x) / fabs(translation.y) > 1;
+    if ([self shouldPanLeftToRight] && [self shouldPanRightToLeft]) {
+    // Make sure it is scrolling horizontally
+//        return ( ? YES : NO && (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
+        return pansHorizontally;
+    } else if ([self shouldPanLeftToRight]) {
+        return pansHorizontally && translation.x > 0;
+    } else if ([self shouldPanRightToLeft]) {
+        return pansHorizontally && translation.x < 0;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - Utils

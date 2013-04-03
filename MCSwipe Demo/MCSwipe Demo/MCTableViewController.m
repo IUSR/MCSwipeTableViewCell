@@ -20,7 +20,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        _nbItems = 2;
+        _nbItems = 4;
     }
     return self;
 }
@@ -74,15 +74,32 @@
     [cell.contentView setBackgroundColor:[UIColor whiteColor]];
     [cell setSelectionStyle:UITableViewCellSelectionStyleGray];
 
-    if (indexPath.row % 2) {
-        [cell.textLabel setText:@"Switch Mode Cell"];
+    if (indexPath.row % 4 == 0) {
+        [cell.textLabel setText:@"Switch Mode Cell: Pans bidirectionally"];
         [cell.detailTextLabel setText:@"Swipe to switch"];
         [cell setMode:MCSwipeTableViewCellModeSwitch];
-    }
-    else {
-        [cell.textLabel setText:@"Exit Mode Cell"];
+    } else if (indexPath.row % 4 == 1) {
+        [cell.textLabel setText:@"Exit Mode Cell: Pans bidirectionally"];
         [cell.detailTextLabel setText:@"Swipe to delete"];
         [cell setMode:MCSwipeTableViewCellModeExit];
+    } else if (indexPath.row % 4 == 2) {
+        // pans left to right
+        cell.textLabel.text = @"Switch Mode: Left to Right";
+        cell.detailTextLabel.text = @"Can only swipes from left to right";
+        cell.mode = MCSwipeTableViewCellModeSwitch;
+        cell.thirdIconName = nil;
+        cell.thirdColor = nil;
+        cell.fourthIconName = nil;
+        cell.fourthColor = nil;
+    } else if (indexPath.row % 4 == 3) {
+        // pans right to left
+        cell.textLabel.text = @"Switch Mode: Right to Left";
+        cell.detailTextLabel.text = @"Can only swipes from Right to Left";
+        cell.mode = MCSwipeTableViewCellModeSwitch;
+        cell.firstIconName = nil;
+        cell.firstColor = nil;
+        cell.secondIconName = nil;
+        cell.secondColor = nil;
     }
 
     return cell;
